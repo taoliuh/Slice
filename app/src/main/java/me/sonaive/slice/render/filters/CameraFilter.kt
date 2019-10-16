@@ -1,4 +1,4 @@
-package me.sonaive.slice.gles.filters
+package me.sonaive.slice.render.filters
 
 import android.annotation.SuppressLint
 import android.app.Application
@@ -21,7 +21,7 @@ class CameraFilter(application: Application): GLFilter(application) {
     @SuppressLint("Recycle")
     override fun onCreate() {
         mOESFilter.create()
-        mOESTextureId = GLUtils.createFrameBuffer()
+        mOESTextureId = GLUtils.createOESTexture()
         mSurfaceTexture = SurfaceTexture(mOESTextureId)
     }
 
@@ -44,6 +44,10 @@ class CameraFilter(application: Application): GLFilter(application) {
 
     override fun getOutputTextureId(): Int {
         return mOutputTextureId
+    }
+
+    fun getSurfaceTexture(): SurfaceTexture? {
+        return mSurfaceTexture
     }
 
     fun release() {

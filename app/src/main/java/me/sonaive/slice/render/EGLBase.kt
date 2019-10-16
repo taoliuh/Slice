@@ -1,4 +1,4 @@
-package me.sonaive.slice.gles
+package me.sonaive.slice.render
 
 import android.graphics.SurfaceTexture
 import android.opengl.*
@@ -188,7 +188,7 @@ class EGLBase(context: EGLContext?, withDepthBuffer: Boolean, isRecordable: Bool
         return EGL14.EGL_SUCCESS
     }
 
-    fun createFromSurface(surface: Any): EglSurface {
+    fun createFromSurface(surface: Any?): EglSurface {
         val eglSurface = EglSurface(this, surface)
         eglSurface.makeCurrent()
         return eglSurface
@@ -227,7 +227,7 @@ class EGLBase(context: EGLContext?, withDepthBuffer: Boolean, isRecordable: Bool
         var mHeight: Int = 0
         var mEglSurface: EGLSurface? = EGL14.EGL_NO_SURFACE
 
-        constructor(egl: EGLBase, surface: Any): this() {
+        constructor(egl: EGLBase, surface: Any?): this() {
             if (!(surface is SurfaceView
                         || surface is Surface
                         || surface is SurfaceHolder

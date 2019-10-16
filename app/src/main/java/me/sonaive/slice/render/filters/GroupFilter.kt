@@ -1,4 +1,4 @@
-package me.sonaive.slice.gles.filters
+package me.sonaive.slice.render.filters
 
 import android.app.Application
 import android.opengl.GLES20
@@ -17,8 +17,8 @@ class GroupFilter(application: Application): GLFilter(application) {
         private const val TAG = "GroupFilter"
     }
 
-    private var mFilterQueue: Queue<GLFilter>
-    private var mFilters: MutableList<GLFilter>
+    private var mFilterQueue: Queue<GLFilter> = ConcurrentLinkedQueue()
+    private var mFilters: MutableList<GLFilter> = ArrayList()
 
     private var mWidth = 0
     private var mHeight = 0
@@ -26,11 +26,6 @@ class GroupFilter(application: Application): GLFilter(application) {
     private var mFrameBufId = -1
     private var mTextures = IntArray(2)
     private var mTextureIndex = 0
-
-    init {
-        mFilterQueue = ConcurrentLinkedQueue()
-        mFilters = ArrayList()
-    }
 
     override fun onCreate() {
         // do nothing
@@ -83,11 +78,11 @@ class GroupFilter(application: Application): GLFilter(application) {
     }
 
     private fun updateFilter() {
-        var filter: GLFilter
+        var filter: GLFilter?
         while ((mFilterQueue.poll().also { filter = it }) != null) {
-            filter.create()
-            filter.setSize(mWidth, mHeight)
-            mFilters.add(filter)
+            filter!!.create()
+            filter!!.setSize(mWidth, mHeight)
+            mFilters.add(filter!!)
             ++mSize
         }
     }

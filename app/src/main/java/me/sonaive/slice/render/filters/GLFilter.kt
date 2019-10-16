@@ -1,4 +1,4 @@
-package me.sonaive.slice.gles.filters
+package me.sonaive.slice.render.filters
 
 import android.app.Application
 import android.opengl.GLES20
@@ -112,12 +112,12 @@ abstract class GLFilter(application: Application) {
     open fun onDraw() {
         GLES20.glEnableVertexAttribArray(mPositionLoc)
         GLES20.glVertexAttribPointer(mPositionLoc, 2, GLES20.GL_FLOAT, false, 0, mVertexBuf)
-        GLES20.glEnableVertexAttribArray(mTextureLoc)
-        GLES20.glVertexAttribPointer(mTextureLoc, 2, GLES20.GL_FLOAT, false, 0,
+        GLES20.glEnableVertexAttribArray(mTextureCoordLoc)
+        GLES20.glVertexAttribPointer(mTextureCoordLoc, 2, GLES20.GL_FLOAT, false, 0,
             mTextureCoordBuf)
         GLES20.glDrawArrays(GLES20.GL_TRIANGLE_STRIP, 0, 4)
         GLES20.glDisableVertexAttribArray(mPositionLoc)
-        GLES20.glDisableVertexAttribArray(mTextureLoc)
+        GLES20.glDisableVertexAttribArray(mTextureCoordLoc)
     }
 
     open fun draw() {
@@ -127,7 +127,6 @@ abstract class GLFilter(application: Application) {
         onBindTexture()
         onDraw()
     }
-
 
     open fun getOutputTextureId(): Int {
         return -1

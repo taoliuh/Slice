@@ -1,4 +1,4 @@
-package me.sonaive.slice.gles
+package me.sonaive.slice.render
 
 import android.graphics.SurfaceTexture
 import android.os.HandlerThread

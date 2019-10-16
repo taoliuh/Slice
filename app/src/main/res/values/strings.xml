@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">Slice</string>
+    <string name="request_permission_failed">没有获得必要的权限</string>
 </resources>

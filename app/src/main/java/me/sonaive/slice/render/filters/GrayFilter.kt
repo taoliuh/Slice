@@ -1,4 +1,4 @@
-package me.sonaive.slice.gles.filters
+package me.sonaive.slice.render.filters
 
 import android.app.Application
 
