@@ -31,7 +31,7 @@ class CameraThread(helper: CameraHelper): Thread() {
     private var isReady = false
     private var mWeakCameraHelper: WeakReference<CameraHelper>? = null
     private var mHandler: CameraHelper.CameraHandler? = null
-    private var mReadyFence = java.lang.Object()
+    private var mReadyFence = Object()
 
     init {
         ORIENTATIONS.append(Surface.ROTATION_0, 90)
@@ -212,7 +212,8 @@ class CameraThread(helper: CameraHelper): Thread() {
      ******************************************************************************************************************/
 
     private fun openCamera(cameraId: Int) {
-        if ((cameraId != Camera.CameraInfo.CAMERA_FACING_FRONT) and (cameraId != Camera.CameraInfo.CAMERA_FACING_BACK)) {
+        if ((cameraId != Camera.CameraInfo.CAMERA_FACING_FRONT)
+            and (cameraId != Camera.CameraInfo.CAMERA_FACING_BACK)) {
             throw IllegalArgumentException("illegal camera id")
         }
         Log.d(TAG, "openCamera")

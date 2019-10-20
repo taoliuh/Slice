@@ -54,6 +54,7 @@ class CameraFilter(application: Application): GLFilter(application) {
         GLES20.glDeleteFramebuffers(1, intArrayOf(mFrameBufId), 0)
         GLES20.glDeleteTextures(2, intArrayOf(mOutputTextureId, mOESTextureId), 0)
         mSurfaceTexture?.release()
+        mSurfaceTexture = null
     }
 
 }

@@ -29,6 +29,7 @@ class EGLBase(context: EGLContext?, withDepthBuffer: Boolean, isRecordable: Bool
         if (mEglDisplay != EGL14.EGL_NO_DISPLAY) {
             throw IllegalStateException("EGL already set up!")
         }
+        val sharedContext = context ?: EGL14.EGL_NO_CONTEXT
         mEglDisplay = EGL14.eglGetDisplay(EGL14.EGL_DEFAULT_DISPLAY)
         if (mEglDisplay == EGL14.EGL_NO_DISPLAY) {
             throw RuntimeException("eglGetDisplay failed!")
@@ -42,7 +43,7 @@ class EGLBase(context: EGLContext?, withDepthBuffer: Boolean, isRecordable: Bool
             if (mEglConfig == null) {
                 throw RuntimeException("chooseConfig failed!")
             }
-            mEglContext = createContext(context)
+            mEglContext = createContext(sharedContext)
         }
         val values = IntArray(1)
         EGL14.eglQueryContext(mEglDisplay, mEglContext, EGL14.EGL_CONTEXT_CLIENT_VERSION, values, 0)

@@ -103,7 +103,7 @@ class CameraHelper private constructor() {
         handler.sendEmptyMessage(MSG_STOP_PREVIEW)
     }
 
-    fun setPreviewTexture(surfaceTexture: SurfaceTexture) {
+    fun setPreviewTexture(surfaceTexture: SurfaceTexture?) {
         val handler = mCamera?.getHandler() ?: return
         handler.sendMessage(handler.obtainMessage(MSG_SET_PREVIEW_TEXTURE, surfaceTexture))
     }
