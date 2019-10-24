@@ -37,10 +37,11 @@ class CameraHelper private constructor() {
     private var mCamera: CameraThread? = null
 
     fun prepareCameraThread() {
-        mCamera = CameraThread(this)
-        mCamera?.start()
+        Log.d(TAG, "prepareCameraThread")
+        mCamera = CameraThread()
+        mCamera!!.start()
         // 调用方为OpenGL线程 里面有线程等待，会在这里等一会。如果此时主线程将mCamera置空，会触发空指针
-        mCamera?.waitUntilReady()
+        mCamera!!.waitUntilReady()
     }
 
 

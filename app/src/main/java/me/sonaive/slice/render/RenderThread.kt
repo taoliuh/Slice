@@ -1,20 +1,22 @@
 package me.sonaive.slice.render
 
-import android.app.Activity
+import android.app.Application
 import android.graphics.SurfaceTexture
 import android.hardware.Camera
+import android.opengl.EGLContext
 import android.os.HandlerThread
 import android.util.Log
 import android.view.Surface
 import android.view.SurfaceHolder
 import me.sonaive.slice.camera.CameraHelper
+import me.sonaive.slice.recorder.HardwareEncoder
 import me.sonaive.slice.render.filters.*
 import java.lang.IllegalArgumentException
 
 /**
  * Created by liutao on 30/09/2019.
  */
-class RenderThread(activity: Activity, name: String): HandlerThread(name),
+class RenderThread(application: Application, rotation: Int, name: String): HandlerThread(name),
     SurfaceTexture.OnFrameAvailableListener {
 
     companion object {
@@ -28,9 +30,14 @@ class RenderThread(activity: Activity, name: String): HandlerThread(name),
     private var mGroupFilter: GroupFilter? = null
     private var mNoFilter: NoFilter? = null
 
-    private var mActivity: Activity = activity
-
+    private var mApplication: Application = application
+    private var mRotation = rotation
+    private var mEnableRecording = false
     private var mCameraIndex = Camera.CameraInfo.CAMERA_FACING_BACK
+
+    fun enableRecording(enable: Boolean) {
+        mEnableRecording = enable
+    }
 
     fun surfaceCreate(surface: Any) {
         Log.d(TAG, "surfaceCreate")
@@ -41,9 +48,9 @@ class RenderThread(activity: Activity, name: String): HandlerThread(name),
         mEglSurface = mEgl?.createFromSurface(surface)
         mEglSurface?.makeCurrent()
 
-        mCameraFilter = CameraFilter(mActivity.application)
-        mGroupFilter = GroupFilter(mActivity.application)
-        mNoFilter = NoFilter(mActivity.application)
+        mCameraFilter = CameraFilter(mApplication)
+        mGroupFilter = GroupFilter(mApplication)
+        mNoFilter = NoFilter(mApplication)
 
         mCameraFilter!!.create()
         mGroupFilter!!.create()
@@ -70,8 +77,7 @@ class RenderThread(activity: Activity, name: String): HandlerThread(name),
         releaseCamera()
         CameraHelper.instance.prepareCameraThread()
         CameraHelper.instance.openCamera(mCameraIndex)
-        val rotation = mActivity.windowManager.defaultDisplay.rotation
-        CameraHelper.instance.initCamera(rotation, 9f / 16f)
+        CameraHelper.instance.initCamera(mRotation, 9f / 16f)
         CameraHelper.instance.setPreviewTexture(mCameraFilter!!.getSurfaceTexture())
         CameraHelper.instance.startPreview()
     }
@@ -94,6 +100,10 @@ class RenderThread(activity: Activity, name: String): HandlerThread(name),
         mGroupFilter?.addFilter(filter)
     }
 
+    fun getSharedEGL(): EGLContext? {
+        return mEgl?.getEGLContext()
+    }
+
     override fun onFrameAvailable(surfaceTexture: SurfaceTexture?) {
         drawFrame()
     }
@@ -106,11 +116,20 @@ class RenderThread(activity: Activity, name: String): HandlerThread(name),
         mNoFilter?.setTextureId(mGroupFilter?.getOutputTextureId() ?: -1)
         mNoFilter?.draw()
         mEglSurface?.swap()
+        if (mEnableRecording) {
+            HardwareEncoder.instance.frameAvailable()
+            HardwareEncoder.instance.drawRecordFrame(mGroupFilter?.getOutputTextureId() ?: -1)
+        }
     }
 
     private fun release() {
         releaseCamera()
         mCameraFilter?.release()
+        mGroupFilter?.release()
+        mNoFilter?.release()
+        mCameraFilter = null
+        mGroupFilter = null
+        mNoFilter = null
         mEglSurface?.makeCurrent()
         mEglSurface?.release()
         mEglSurface = null

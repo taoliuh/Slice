@@ -72,9 +72,10 @@ class GroupFilter(application: Application): GLFilter(application) {
         mSize = 0
     }
 
-    fun release() {
+    override fun release() {
         GLES20.glDeleteFramebuffers(1, intArrayOf(mFrameBufId), 0)
         GLES20.glDeleteTextures(mTextures.size, mTextures, 0)
+        super.release()
     }
 
     private fun updateFilter() {

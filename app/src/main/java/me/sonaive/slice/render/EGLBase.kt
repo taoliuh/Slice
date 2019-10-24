@@ -19,10 +19,10 @@ class EGLBase(context: EGLContext?, withDepthBuffer: Boolean, isRecordable: Bool
         private const val EGL_RECORDABLE_ANDROID = 0x3142
     }
 
-    var mEglConfig: EGLConfig? = null
-    var mEglContext: EGLContext = EGL14.EGL_NO_CONTEXT
-    var mEglDisplay: EGLDisplay = EGL14.EGL_NO_DISPLAY
-    var mDefaultContext: EGLContext = EGL14.EGL_NO_CONTEXT
+    private var mEglConfig: EGLConfig? = null
+    private var mEglContext: EGLContext = EGL14.EGL_NO_CONTEXT
+    private var mEglDisplay: EGLDisplay = EGL14.EGL_NO_DISPLAY
+    private var mDefaultContext: EGLContext = EGL14.EGL_NO_CONTEXT
 
     init {
         Log.i(TAG, "EGLBase init")
@@ -201,7 +201,7 @@ class EGLBase(context: EGLContext?, withDepthBuffer: Boolean, isRecordable: Bool
         return eglSurface
     }
 
-    fun getContext(): EGLContext {
+    fun getEGLContext(): EGLContext {
         return mEglContext
     }
 
@@ -258,8 +258,8 @@ class EGLBase(context: EGLContext?, withDepthBuffer: Boolean, isRecordable: Bool
             mEgl.swap(mEglSurface)
         }
 
-        fun getContext(): EGLContext {
-            return mEgl.getContext()
+        fun getEGLContext(): EGLContext {
+            return mEgl.getEGLContext()
         }
 
         fun release() {

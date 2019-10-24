@@ -10,7 +10,6 @@ import android.view.Surface
 import android.view.SurfaceHolder
 import java.lang.Exception
 import java.lang.IllegalArgumentException
-import java.lang.ref.WeakReference
 import java.util.*
 import kotlin.Comparator
 import kotlin.collections.ArrayList
@@ -19,7 +18,7 @@ import kotlin.collections.ArrayList
  * Created by liutao on 12/10/2019.
  */
 
-class CameraThread(helper: CameraHelper): Thread() {
+class CameraThread: Thread() {
 
     companion object {
         private const val TAG = "CameraThread"
@@ -29,7 +28,6 @@ class CameraThread(helper: CameraHelper): Thread() {
     private var mCamera: Camera? = null
     private var mFacing = -1
     private var isReady = false
-    private var mWeakCameraHelper: WeakReference<CameraHelper>? = null
     private var mHandler: CameraHelper.CameraHandler? = null
     private var mReadyFence = Object()
 
@@ -38,7 +36,6 @@ class CameraThread(helper: CameraHelper): Thread() {
         ORIENTATIONS.append(Surface.ROTATION_90, 0)
         ORIENTATIONS.append(Surface.ROTATION_180, 270)
         ORIENTATIONS.append(Surface.ROTATION_270, 180)
-        mWeakCameraHelper = WeakReference(helper)
     }
 
     /*******************************************************************************************************************
@@ -199,7 +196,6 @@ class CameraThread(helper: CameraHelper): Thread() {
         }
         Looper.loop()
         synchronized(mReadyFence) {
-            release()
             isReady = false
             mHandler = null
         }
@@ -325,11 +321,6 @@ class CameraThread(helper: CameraHelper): Thread() {
             Log.w(TAG, "release camera failed! cause: " + e.message)
         }
 
-    }
-
-    private fun release() {
-        mWeakCameraHelper?.clear()
-        mWeakCameraHelper = null
     }
 
     private inner class CameraSizeComparator: Comparator<Camera.Size> {

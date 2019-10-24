@@ -1,19 +1,21 @@
 package me.sonaive.slice
 
 import android.Manifest
+import android.graphics.SurfaceTexture
 import android.os.Bundle
 import android.support.v4.app.FragmentActivity
 import android.util.Log
-import android.view.SurfaceHolder
+import android.view.TextureView
 import android.widget.Toast
-import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.android.synthetic.main.activity_main.bt_record
+import kotlinx.android.synthetic.main.activity_texture_camera.*
 import me.sonaive.slice.recorder.HardwareEncoder
 import me.sonaive.slice.recorder.MediaEncoder
 import me.sonaive.slice.render.RenderHelper
 import me.sonaive.slice.render.filters.GrayFilter
 import me.sonaive.slice.utils.PermissionUtils
 
-class CameraActivity : FragmentActivity(), SurfaceHolder.Callback {
+class CameraTextureActivity : FragmentActivity(), TextureView.SurfaceTextureListener {
 
     companion object {
         private const val TAG = "CameraActivity"
@@ -22,8 +24,8 @@ class CameraActivity : FragmentActivity(), SurfaceHolder.Callback {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
-        surface_view.holder.addCallback(this)
+        setContentView(R.layout.activity_texture_camera)
+        surface_view.surfaceTextureListener = this
         RenderHelper.instance.prepareRenderThread(application, windowManager.defaultDisplay.rotation)
         bt_record.setOnClickListener {
             if (bt_record.text == "START") {
@@ -79,20 +81,26 @@ class CameraActivity : FragmentActivity(), SurfaceHolder.Callback {
         )
     }
 
-    override fun surfaceCreated(holder: SurfaceHolder?) {
-        Log.d(TAG, "surfaceCreated")
-        RenderHelper.instance.surfaceCreated(holder)
-        RenderHelper.instance.addFilter(GrayFilter(application))
-    }
-
-    override fun surfaceChanged(holder: SurfaceHolder?, format: Int, width: Int, height: Int) {
-        Log.d(TAG, "surfaceChanged, width = $width , height = $height")
+    override fun onSurfaceTextureSizeChanged(surface: SurfaceTexture?, width: Int, height: Int) {
+        Log.d(TAG, "onSurfaceTextureSizeChanged, width = $width , height = $height")
         RenderHelper.instance.surfaceChanged(width, height)
     }
 
-    override fun surfaceDestroyed(holder: SurfaceHolder?) {
-        Log.d(TAG, "surfaceDestroyed")
-        RenderHelper.instance.surfaceDestroyed()
+    override fun onSurfaceTextureUpdated(surface: SurfaceTexture?) {
+        Log.d(TAG, "onSurfaceTextureUpdated")
+    }
+
+    override fun onSurfaceTextureDestroyed(surface: SurfaceTexture?): Boolean {
+        Log.d(TAG, "onSurfaceTextureDestroyed")
+        RenderHelper.instance.surfaceCreated(surface)
+        return true
+    }
+
+    override fun onSurfaceTextureAvailable(surface: SurfaceTexture?, width: Int, height: Int) {
+        Log.d(TAG, "onSurfaceTextureAvailable, width = $width , height = $height")
+        RenderHelper.instance.surfaceCreated(surface)
+        RenderHelper.instance.surfaceChanged(width, height)
+        RenderHelper.instance.addFilter(GrayFilter(application))
     }
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {

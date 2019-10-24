@@ -8,8 +8,6 @@ import android.util.Log
  * Created by liutao on 25/09/2019.
  */
 
-
-
 object GLUtils {
 
     private const val TAG = "GLUtils"
@@ -112,7 +110,7 @@ object GLUtils {
         GLES20.glTexParameterf(target, GLES20.GL_TEXTURE_MAG_FILTER, GLES20.GL_LINEAR.toFloat())
         GLES20.glTexParameterf(target, GLES20.GL_TEXTURE_WRAP_S, GLES20.GL_CLAMP_TO_EDGE.toFloat())
         GLES20.glTexParameterf(target, GLES20.GL_TEXTURE_WRAP_T, GLES20.GL_CLAMP_TO_EDGE.toFloat())
-        checkGlError("generateTexture")
+        checkGLError("generateTexture")
         return textureId
     }
 
@@ -142,7 +140,7 @@ object GLUtils {
         return textures[0]
     }
 
-    private fun checkGlError(op: String) {
+    private fun checkGLError(op: String) {
         val error = GLES20.glGetError()
         if (error != GLES20.GL_NO_ERROR) {
             Log.e(TAG, "$op : glError 0x ${Integer.toHexString(error)}")

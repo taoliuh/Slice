@@ -132,6 +132,13 @@ abstract class GLFilter(application: Application) {
         return -1
     }
 
+    open fun release() {
+        if (mProgram >= 0) {
+            GLES20.glDeleteProgram(mProgram)
+        }
+        mProgram = -1
+    }
+
     /*******************************************************************************************************************
      *
      *    protected methods

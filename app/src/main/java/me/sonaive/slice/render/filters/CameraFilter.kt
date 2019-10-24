@@ -46,15 +46,16 @@ class CameraFilter(application: Application): GLFilter(application) {
         return mOutputTextureId
     }
 
-    fun getSurfaceTexture(): SurfaceTexture? {
-        return mSurfaceTexture
-    }
-
-    fun release() {
+    override fun release() {
         GLES20.glDeleteFramebuffers(1, intArrayOf(mFrameBufId), 0)
         GLES20.glDeleteTextures(2, intArrayOf(mOutputTextureId, mOESTextureId), 0)
         mSurfaceTexture?.release()
         mSurfaceTexture = null
+        super.release()
+    }
+
+    fun getSurfaceTexture(): SurfaceTexture? {
+        return mSurfaceTexture
     }
 
 }
