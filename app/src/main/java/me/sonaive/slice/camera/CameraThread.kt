@@ -18,7 +18,7 @@ import kotlin.collections.ArrayList
  * Created by liutao on 12/10/2019.
  */
 
-class CameraThread: Thread() {
+class CameraThread(name: String): Thread(name) {
 
     companion object {
         private const val TAG = "CameraThread"

@@ -26,6 +26,9 @@ class CameraTextureActivity : FragmentActivity(), TextureView.SurfaceTextureList
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_texture_camera)
         surface_view.surfaceTextureListener = this
+        if (SurfaceTextureHolder.mSurfaceTexture != null) {
+            surface_view.surfaceTexture = SurfaceTextureHolder.mSurfaceTexture
+        }
         RenderHelper.instance.prepareRenderThread(application, windowManager.defaultDisplay.rotation)
         bt_record.setOnClickListener {
             if (bt_record.text == "START") {
@@ -92,13 +95,13 @@ class CameraTextureActivity : FragmentActivity(), TextureView.SurfaceTextureList
 
     override fun onSurfaceTextureDestroyed(surface: SurfaceTexture?): Boolean {
         Log.d(TAG, "onSurfaceTextureDestroyed")
-        RenderHelper.instance.surfaceCreated(surface)
-        return true
+        SurfaceTextureHolder.mSurfaceTexture = surface
+        return false
     }
 
     override fun onSurfaceTextureAvailable(surface: SurfaceTexture?, width: Int, height: Int) {
         Log.d(TAG, "onSurfaceTextureAvailable, width = $width , height = $height")
-        RenderHelper.instance.surfaceCreated(surface)
+        RenderHelper.instance.surfaceCreated(SurfaceTextureHolder.mSurfaceTexture ?: surface)
         RenderHelper.instance.surfaceChanged(width, height)
         RenderHelper.instance.addFilter(GrayFilter(application))
     }
@@ -115,10 +118,5 @@ class CameraTextureActivity : FragmentActivity(), TextureView.SurfaceTextureList
                     Toast.LENGTH_SHORT
                 ).show()
             })
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        RenderHelper.instance.release()
     }
 }

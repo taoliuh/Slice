@@ -16,7 +16,7 @@
             android:roundIcon="@mipmap/ic_launcher_round"
             android:supportsRtl="true"
             android:theme="@android:style/Theme.Light.NoTitleBar">
-        <activity android:name=".CameraActivity">
+        <activity android:name=".CameraTextureActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
 
@@ -24,7 +24,7 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".CameraTextureActivity" />
+        <activity android:name=".CameraActivity" />
     </application>
 
 </manifest>

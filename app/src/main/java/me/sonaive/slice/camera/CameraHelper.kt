@@ -38,7 +38,7 @@ class CameraHelper private constructor() {
 
     fun prepareCameraThread() {
         Log.d(TAG, "prepareCameraThread")
-        mCamera = CameraThread()
+        mCamera = CameraThread("CameraThread")
         mCamera!!.start()
         // 调用方为OpenGL线程 里面有线程等待，会在这里等一会。如果此时主线程将mCamera置空，会触发空指针
         mCamera!!.waitUntilReady()
@@ -132,6 +132,7 @@ class CameraHelper private constructor() {
                 MSG_ENABLE_FLASH -> camera.enableFlash(msg.obj as Boolean)
                 MSG_SWITCH_CAMERA -> camera.switchCamera(msg.arg1, msg.arg2, msg.obj as Float)
                 MSG_QUIT -> {
+                    Log.d(TAG, "current thread name = ${Thread.currentThread().name}")
                     Log.d(TAG, "quit loop")
                     Looper.myLooper()!!.quit()
                     release()

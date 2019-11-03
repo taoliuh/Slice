@@ -5,6 +5,7 @@ import android.graphics.SurfaceTexture
 import android.opengl.EGLContext
 import android.os.Handler
 import android.os.Message
+import android.util.Log
 import android.view.Surface
 import android.view.SurfaceHolder
 import me.sonaive.slice.render.filters.GLFilter
@@ -16,6 +17,7 @@ import java.lang.ref.WeakReference
 
 class RenderHelper {
     companion object {
+        private const val TAG = "RenderHelper"
         // Surface创建
         private const val MSG_SURFACE_CREATED = 1
         // Surface改变
@@ -114,6 +116,8 @@ class RenderHelper {
                 MSG_CHANGE_FILTER -> thread?.replaceFilter(msg.obj as GLFilter)
                 MSG_ADD_FILTER -> thread?.addFilter(msg.obj as GLFilter)
                 MSG_QUIT -> {
+                    Log.d(TAG, "current thread name = ${Thread.currentThread().name}")
+                    Log.d(TAG, "quit loop")
                     thread?.quit()
                     mRenderThreadRef.clear()
                 }
