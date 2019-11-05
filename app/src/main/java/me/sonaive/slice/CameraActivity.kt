@@ -93,6 +93,7 @@ class CameraActivity : FragmentActivity(), SurfaceHolder.Callback {
     override fun surfaceDestroyed(holder: SurfaceHolder?) {
         Log.d(TAG, "surfaceDestroyed")
         RenderHelper.instance.surfaceDestroyed()
+        RenderHelper.instance.release()
     }
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
@@ -107,10 +108,5 @@ class CameraActivity : FragmentActivity(), SurfaceHolder.Callback {
                     Toast.LENGTH_SHORT
                 ).show()
             })
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        RenderHelper.instance.release()
     }
 }
